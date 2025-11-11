@@ -13,29 +13,17 @@
     
     <header class="app-header">
         <div class="header-content">
-            <a href="../index.html" class="logo" onclick="window.navigateToCourses ? window.navigateToCourses() : null">
+            <a href="../index.html" class="logo">
                 <i class="fas fa-graduation-cap"></i>
                 <span>LearnHub AI</span>
             </a>
             
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="../index.html" class="nav-link" onclick="window.navigateToCourses ? window.navigateToCourses() : null">
-                        <i class="fas fa-play-circle"></i>
-                        <span>Courses</span>
-                    </a></li>
-                    <li><a href="../dashboard/dashboard.html" class="nav-link">
-                        <i class="fas fa-bullhorn"></i>
-                        <span>Notice Board</span>
-                    </a></li>
-                    <li><a href="../dashboard/dashboard.html" class="nav-link">
-                        <i class="fas fa-book-open"></i>
-                        <span>Academic Info</span>
-                    </a></li>
-                    <li><a href="../dashboard/dashboard.html" class="nav-link">
-                        <i class="fas fa-envelope"></i>
-                        <span>Contact</span>
-                    </a></li>
+                    <li><a href="../index.html" class="nav-link"><i class="fas fa-play-circle"></i><span>Courses</span></a></li>
+                    <li><a href="../dashboard/dashboard.html" class="nav-link"><i class="fas fa-bullhorn"></i><span>Notice Board</span></a></li>
+                    <li><a href="../dashboard/dashboard.html" class="nav-link"><i class="fas fa-book-open"></i><span>Academic Info</span></a></li>
+                    <li><a href="../dashboard/dashboard.html" class="nav-link"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
                 </ul>
             </nav>
 
@@ -142,25 +130,6 @@
                         </div>
                     </div>
 
-                    <div class="form-section">
-                        <h3 class="section-title">Change Password</h3>
-                        <div class="form-group">
-                            <input type="password" id="currentPassword" placeholder=" ">
-                            <label for="currentPassword">Current Password</label>
-                            <div class="input-highlight"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" id="newPassword" placeholder=" ">
-                            <label for="newPassword">New Password</label>
-                            <div class="input-highlight"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" id="confirmNewPassword" placeholder=" ">
-                            <label for="confirmNewPassword">Confirm New Password</label>
-                            <div class="input-highlight"></div>
-                        </div>
-                    </div>
-
                     <div class="form-actions">
                         <button type="button" class="btn btn-outline-premium" id="cancelBtn">Cancel</button>
                         <button type="submit" class="btn btn-premium">Save Changes</button>
@@ -170,7 +139,6 @@
         </div>
     </main>
 
-    
     <div id="notificationContainer"></div>
 
     <script src="profile.js"></script>

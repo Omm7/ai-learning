@@ -1,186 +1,144 @@
-
-let users = JSON.parse(localStorage.getItem('users')) || [];
-
-
-const profileName = document.getElementById('profileName');
-const profileEmail = document.getElementById('profileEmail');
-const profileRole = document.getElementById('profileRole');
-const profileForm = document.getElementById('profileForm');
-const cancelBtn = document.getElementById('cancelBtn');
-const userWelcome = document.getElementById('userWelcome');
-const logoutBtn = document.getElementById('logoutBtn');
+const API_BASE = "http://localhost:5000"; // Flask backend base URL
 const notificationContainer = document.getElementById('notificationContainer');
 
+// Initialize page when DOM ready
+document.addEventListener("DOMContentLoaded", init);
 
-function init() {
-    if (!checkAuthentication()) return;
-    
-    loadEventListeners();
-    loadUserData();
-}
+async function init() {
+  let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  console.log("Profile Init → currentUser:", currentUser);
 
-
-function checkAuthentication() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    
-    if (!currentUser) {
-        window.location.href = '../auth/login.html';
-        return false;
-    }
-    
-    return true;
-}
-
-
-function loadEventListeners() {
-    profileForm.addEventListener('submit', handleProfileUpdate);
-    cancelBtn.addEventListener('click', handleCancel);
-    logoutBtn.addEventListener('click', handleLogout);
-}
-
-
-function loadUserData() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    
-    if (currentUser) {
-        userWelcome.textContent = currentUser.name;
-        
-        const userData = users.find(user => user.email === currentUser.email);
-        
-        if (userData) {
-            document.getElementById('profileFirstName').value = userData.firstName || '';
-            document.getElementById('profileLastName').value = userData.lastName || '';
-            document.getElementById('profileEmailInput').value = userData.email || '';
-            document.getElementById('profilePhone').value = userData.phone || '';
-            document.getElementById('profileRollNumber').value = userData.rollNumber || '';
-            document.getElementById('profileBranch').value = userData.branch || '';
-            document.getElementById('profileSemester').value = userData.semester || '';
-            
-            profileName.textContent = `${userData.firstName} ${userData.lastName}`;
-            profileEmail.textContent = userData.email;
-            profileRole.textContent = userData.role === 'admin' ? 'Administrator' : 'Student';
-        }
-    }
-}
-
-
-function handleProfileUpdate(e) {
-    e.preventDefault();
-    
-    const firstName = document.getElementById('profileFirstName').value;
-    const lastName = document.getElementById('profileLastName').value;
-    const email = document.getElementById('profileEmailInput').value;
-    const phone = document.getElementById('profilePhone').value;
-    const rollNumber = document.getElementById('profileRollNumber').value;
-    const branch = document.getElementById('profileBranch').value;
-    const semester = document.getElementById('profileSemester').value;
-    const currentPassword = document.getElementById('currentPassword').value;
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-    
-    const userIndex = users.findIndex(user => {
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        return user.email === currentUser.email;
-    });
-    
-    if (userIndex === -1) {
-        showNotification('User not found', 'error');
-        return;
-    }
-    
-    if (email !== users[userIndex].email) {
-        const emailExists = users.some(user => user.email === email && user.email !== users[userIndex].email);
-        if (emailExists) {
-            showNotification('Email already exists. Please use a different email.', 'error');
-            return;
-        }
-    }
-    
-    if (currentPassword || newPassword || confirmNewPassword) {
-        if (!currentPassword) {
-            showNotification('Please enter your current password to change password', 'error');
-            return;
-        }
-        
-        if (currentPassword !== users[userIndex].password) {
-            showNotification('Current password is incorrect', 'error');
-            return;
-        }
-        
-        if (newPassword.length < 6) {
-            showNotification('New password must be at least 6 characters', 'error');
-            return;
-        }
-        
-        if (newPassword !== confirmNewPassword) {
-            showNotification('New passwords do not match', 'error');
-            return;
-        }
-        
-        users[userIndex].password = newPassword;
-    }
-    
-    users[userIndex] = {
-        ...users[userIndex],
-        firstName,
-        lastName,
-        email,
-        phone: phone || '',
-        rollNumber,
-        branch,
-        semester
-    };
-    
-    const currentUser = {
-        email: users[userIndex].email,
-        name: `${users[userIndex].firstName} ${users[userIndex].lastName}`,
-        role: users[userIndex].role
-    };
-    
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    
-    profileName.textContent = currentUser.name;
-    profileEmail.textContent = currentUser.email;
-    userWelcome.textContent = currentUser.name;
-    
-    document.getElementById('currentPassword').value = '';
-    document.getElementById('newPassword').value = '';
-    document.getElementById('confirmNewPassword').value = '';
-    
-    showNotification('Profile updated successfully!', 'success');
-}
-
-
-function handleCancel() {
-    loadUserData();
-    showNotification('Changes discarded', 'error');
-}
-
-
-function handleLogout(e) {
-    e.preventDefault();
-    localStorage.removeItem('currentUser');
+  // Redirect if not logged in
+  if (!currentUser || !currentUser.id) {
     window.location.href = '../auth/login.html';
+    return;
+  }
+
+  loadProfile(currentUser);
+
+  // Fetch latest data from backend
+  try {
+    const res = await fetch(`${API_BASE}/api/get-user/${currentUser.id}`);
+    const data = await res.json();
+    if (data.success && data.user) {
+      currentUser = data.user;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      loadProfile(currentUser);
+    } else {
+      showNotification("Failed to fetch profile details.", "error");
+    }
+  } catch (err) {
+    console.warn("Could not fetch latest profile:", err);
+    showNotification("Could not fetch latest data from server", "error");
+  }
+
+  // Attach event listeners
+  document.getElementById("profileForm").addEventListener("submit", updateProfile);
+  document.getElementById("cancelBtn").addEventListener("click", cancelEdit);
+  document.getElementById("logoutBtn").addEventListener("click", logout);
 }
 
+// Load profile data into input fields and top card
+function loadProfile(user) {
+  if (!user) return;
 
+  document.getElementById('profileFirstName').value = user.first_name || '';
+  document.getElementById('profileLastName').value = user.last_name || '';
+  document.getElementById('profileEmailInput').value = user.email || '';
+  document.getElementById('profilePhone').value = user.phone || '';
+  document.getElementById('profileRollNumber').value = user.roll_number || '';
+  document.getElementById('profileBranch').value = user.branch || '';
+  document.getElementById('profileSemester').value = user.semester || '';
+
+  document.getElementById('profileName').textContent =
+    `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'No Name';
+  document.getElementById('profileEmail').textContent = user.email || 'Not Available';
+  document.getElementById('profileRole').textContent =
+    user.role === 'admin' ? 'Administrator' : 'Student';
+  document.getElementById('userWelcome').textContent = user.first_name || 'User';
+}
+
+// Update profile in backend
+async function updateProfile(e) {
+  e.preventDefault();
+
+  let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  if (!currentUser || !currentUser.id) return showNotification("No user found", "error");
+
+  const updatedData = {
+    id: currentUser.id,
+    first_name: document.getElementById('profileFirstName').value.trim(),
+    last_name: document.getElementById('profileLastName').value.trim(),
+    email: document.getElementById('profileEmailInput').value.trim(),
+    phone: document.getElementById('profilePhone').value.trim(),
+    roll_number: document.getElementById('profileRollNumber').value.trim(),
+    branch: document.getElementById('profileBranch').value.trim(),
+    semester: document.getElementById('profileSemester').value.trim()
+  };
+
+  try {
+    const res = await fetch(`${API_BASE}/api/update-profile`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData)
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      // Fetch latest user from backend after update
+      const latestRes = await fetch(`${API_BASE}/api/get-user/${currentUser.id}`);
+      const latestData = await latestRes.json();
+
+      if (latestData.success && latestData.user) {
+        currentUser = latestData.user;
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        loadProfile(currentUser);
+        showNotification("Profile updated successfully!", "success");
+
+        // Redirect to dashboard after short delay
+        setTimeout(() => {
+          if (currentUser.role === 'admin') {
+            window.location.href = '../admin/dashboard.html';
+          } else {
+            window.location.href = '../dashboard/dashboard.html';
+          }
+        }, 500);
+      } else {
+        showNotification("Profile updated, but failed to refresh data.", "warning");
+      }
+    } else {
+      showNotification(data.message || "Failed to update profile", "error");
+    }
+  } catch (err) {
+    console.error("Update error:", err);
+    showNotification("Server error while updating profile", "error");
+  }
+}
+
+// Cancel changes and go back
+function cancelEdit() {
+  showNotification("Changes discarded", "error");
+
+  // Redirect immediately (no unnecessary delay)
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  if (currentUser?.role === 'admin') {
+    window.location.href = '../admin/dashboard.html';
+  } else {
+    window.location.href = '../dashboard/dashboard.html';
+  }
+}
+
+// Logout
+function logout() {
+  localStorage.removeItem("currentUser");
+  window.location.href = "../auth/login.html";
+}
+
+// Notification helper
 function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <span>${message}</span>
-        <button onclick="this.parentElement.remove()">&times;</button>
-    `;
-    
-    notificationContainer.appendChild(notification);
-    
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
-    }, 5000);
+  const div = document.createElement("div");
+  div.className = `notification notification-${type}`;
+  div.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()">&times;</button>`;
+  notificationContainer.appendChild(div);
+  setTimeout(() => div.remove(), 4000);
 }
-
-
-document.addEventListener('DOMContentLoaded', init);

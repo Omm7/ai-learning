@@ -1,276 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - LearnHub AI</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - LearnHub AI</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../style.css"/>
+  <link rel="stylesheet" href="dashboard.css"/>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  />
 </head>
 <body>
-    
-    <header class="app-header">
-        <div class="header-content">
-            <a href="../index.html" class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <span>LearnHub AI</span>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <a href="../index.html" class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>LearnHub AI</span>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="nav-menu">
+        <ul>
+          <li>
+            <a href="#" class="nav-link active" data-section="courses">
+              <i class="fas fa-play-circle"></i>
+              <span>Courses</span>
             </a>
-            
-            <nav class="nav-menu">
-                <ul>
-                    <li><a href="../index.html" class="nav-link" data-section="courses">
-                        <i class="fas fa-play-circle"></i>
-                        <span>Courses</span>
-                    </a></li>
-                    <li><a href="#" class="nav-link active" data-section="noticeBoard">
-                        <i class="fas fa-bullhorn"></i>
-                        <span>Notice Board</span>
-                    </a></li>
-                    <li><a href="#" class="nav-link" data-section="academicInfo">
-                        <i class="fas fa-book-open"></i>
-                        <span>Academic Info</span>
-                    </a></li>
-                    <li><a href="#" class="nav-link" data-section="contactUs">
-                        <i class="fas fa-envelope"></i>
-                        <span>Contact</span>
-                    </a></li>
-                </ul>
-            </nav>
+          </li>
+          <li>
+            <a href="#" class="nav-link" data-section="noticeBoard">
+              <i class="fas fa-bullhorn"></i>
+              <span>Notice Board</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link" data-section="academicInfo">
+              <i class="fas fa-book-open"></i>
+              <span>Academic Info</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link" data-section="contactUs">
+              <i class="fas fa-envelope"></i>
+              <span>Contact</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
 
-            <div class="user-actions">
-                <div class="search-container">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search..." id="globalSearch">
-                </div>
-                <div class="user-menu">
-                    <button class="user-menu-btn" id="userMenuBtn">
-                        <div class="user-avatar">
-                            <i class="fas fa-user-graduate"></i>
-                        </div>
-                        <span id="userWelcome">Student</span>
-                        <i class="fas fa-caret-down"></i>
-                    </button>
-                    <div class="dropdown-menu" id="userDropdown">
-                        <a href="../profile/profile.html"><i class="fas fa-user-circle"></i> Profile</a>
-                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
-                    </div>
-                </div>
+      <!-- User actions -->
+      <div class="user-actions">
+        <div class="search-container">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search..." id="globalSearch" />
+        </div>
+
+        <div class="user-menu">
+          <button class="user-menu-btn" id="userMenuBtn">
+            <div class="user-avatar">
+              <i class="fas fa-user-graduate"></i>
             </div>
+            <span id="userWelcome">Student</span>
+            <i class="fas fa-caret-down"></i>
+          </button>
 
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <i class="fas fa-bars"></i>
+          <!-- User Dropdown -->
+          <div class="user-dropdown" id="userDropdown">
+            <a href="../profile/profile.html">
+              <i class="fas fa-user-circle"></i> Profile
+            </a>
+            <a href="#" id="logoutBtn">
+              <i class="fas fa-sign-out-alt"></i> Sign Out
+            </a>
+          </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="main-content">
+    <!-- Hero -->
+    <section class="hero-section" id="dashboardHero">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1>Welcome to Your Dashboard</h1>
+        <p>Stay updated with college notices, access academic resources, and manage your learning journey.</p>
+      </div>
+    </section>
+
+    <!-- Courses -->
+    <section class="content-section active" id="coursesSection">
+      <div class="section-header">
+        <h2 class="section-title">Courses</h2>
+        <div class="admin-controls" id="courseAdminControls" style="display: none;">
+          <button class="btn btn-cyan glossy-btn" id="addCourseBtn">
+            <i class="fas fa-plus"></i> Add Course
+          </button>
+        </div>
+      </div>
+      <div class="courses-container" id="coursesContainer"></div>
+    </section>
+
+    <!-- Notice Board -->
+    <section class="content-section" id="noticeBoardSection">
+      <div class="section-header">
+        <h2 class="section-title">College Notice Board</h2>
+        <div class="admin-controls" id="noticeAdminControls" style="display: none;">
+          <button class="btn btn-purple glossy-btn" id="addNoticeBtn">
+            <i class="fas fa-plus"></i> Add New Notice
+          </button>
+        </div>
+      </div>
+      <div class="notices-container" id="noticesContainer"></div>
+    </section>
+
+    <!-- Academic Info -->
+    <section class="content-section" id="academicInfoSection">
+      <div class="section-header">
+        <h2 class="section-title">Academic Resources</h2>
+        <div class="admin-controls" id="academicAdminControls" style="display: none;">
+          <button class="btn btn-cyan glossy-btn" id="addAcademicBtn">
+            <i class="fas fa-plus"></i> Add Resource
+          </button>
+        </div>
+      </div>
+      <div class="academic-grid" id="academicInfoContainer"></div>
+    </section>
+
+    <!-- Contact -->
+    <section class="content-section" id="contactUsSection">
+      <h2 class="section-title">Contact Us</h2>
+      <div class="contact-container">
+        <div class="contact-info">
+  <div class="contact-card">
+    <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+    <div class="contact-details">
+      <h3>Address</h3>
+      <p>
+        <a href="https://www.google.com/maps/search/?api=1&query=GITA+Autonomous+College+Bhubaneswar+Odisha" target="_blank">
+          GITA Autonomous College<br />Bhubaneswar, Odisha
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <div class="contact-card">
+    <div class="contact-icon"><i class="fas fa-phone"></i></div>
+    <div class="contact-details">
+      <h3>Phone</h3>
+      <p>
+        <a href="tel:+916742461881">+91 674 246 1881</a><br />
+        <a href="tel:+919876543210">+91 98765 43210</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="contact-card">
+    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+    <div class="contact-details">
+      <h3>Email</h3>
+      <p>
+        <a href="mailto:info@gita.edu.in">info@gita.edu.in</a><br />
+        <a href="mailto:principal@gita.edu.in">principal@gita.edu.in</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+        <div class="contact-form">
+          <h3>Send us a Message</h3>
+          <form id="contactForm">
+            <div class="form-row">
+              <div class="form-group">
+                <input type="text" id="contactName" name="name" placeholder=" " required />
+                <label for="contactName">Your Name</label>
+                <div class="input-highlight"></div>
+              </div>
+              <div class="form-group">
+                <input type="text" id="contactBranch" name="branch" placeholder=" " required />
+                <label for="contactBranch">Your Branch</label>
+                <div class="input-highlight"></div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <input type="text" id="contactRoll" name="roll" placeholder=" " required />
+                <label for="contactRoll">Roll Number</label>
+                <div class="input-highlight"></div>
+              </div>
+              <div class="form-group">
+                <input type="email" id="contactEmail" name="email" placeholder=" " required />
+                <label for="contactEmail">Your Email</label>
+                <div class="input-highlight"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <textarea id="contactMessage" name="message" placeholder=" " required></textarea>
+              <label for="contactMessage">Message</label>
+              <div class="input-highlight"></div>
+            </div>
+            <button type="submit" class="btn btn-cyan glossy-btn">
+              <span>Send Message</span>
             </button>
+          </form>
         </div>
-    </header>
+      </div>
+    </section>
+  </main>
 
-    
-    <main class="main-content">
-        
-        <section class="hero-section" id="dashboardHero">
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
-                <h1>Welcome to Your Dashboard</h1>
-                <p>Stay updated with college notices, access academic resources, and manage your learning journey.</p>
-            </div>
-        </section>
+   <!-- Notice Modal -->
 
-        
-        <section class="content-section active" id="noticeBoardSection">
-            <div class="section-header">
-                <h2 class="section-title">College Notice Board</h2>
-                <div class="admin-controls" id="noticeAdminControls" style="display: none;">
-                    <button class="btn btn-premium" id="addNoticeBtn">
-                        <i class="fas fa-plus"></i> Add New Notice
-                    </button>
-                </div>
-            </div>
-            
-            <div class="notices-container" id="noticesContainer">
-                
-            </div>
-        </section>
+  <div class="modal" id="noticeModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="noticeModalTitle">Add New Notice</h3>
+        <button class="modal-close" id="closeNoticeModal">&times;</button>
+      </div>
 
-        
-        <section class="content-section" id="academicInfoSection">
-            <div class="section-header">
-                <h2 class="section-title">Academic Resources</h2>
-                <div class="admin-controls" id="academicAdminControls" style="display: none;">
-                    <button class="btn btn-premium" id="addAcademicBtn">
-                        <i class="fas fa-plus"></i> Add Resource
-                    </button>
-                </div>
-            </div>
-            
-            <div class="academic-grid" id="academicGrid">
-                
-            </div>
-        </section>
-
-        
-        <section class="content-section" id="contactUsSection">
-            <h2 class="section-title">Contact Us</h2>
-            
-            <div class="contact-container">
-                <div class="contact-info">
-                    <div class="contact-card">
-                        <div class="contact-icon">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h3>Address</h3>
-                            <p>GITA Autonomous College<br>Bhubaneswar, Odisha</p>
-                        </div>
-                    </div>
-
-                    <div class="contact-card">
-                        <div class="contact-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h3>Phone</h3>
-                            <p>+91 674 246 1881<br>+91 98765 43210</p>
-                        </div>
-                    </div>
-
-                    <div class="contact-card">
-                        <div class="contact-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="contact-details">
-                            <h3>Email</h3>
-                            <p>info@gita.edu.in<br>principal@gita.edu.in</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="contact-form">
-                    <h3>Send us a Message</h3>
-                    <form id="contactForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <input type="text" id="contactName" name="name" placeholder=" " required>
-                                <label for="contactName">Your Name</label>
-                                <div class="input-highlight"></div>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" id="contactBranch" name="branch" placeholder=" " required>
-                                <label for="contactBranch">Your Branch</label>
-                                <div class="input-highlight"></div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <input type="text" id="contactRoll" name="roll" placeholder=" " required>
-                                <label for="contactRoll">Roll Number</label>
-                                <div class="input-highlight"></div>
-                            </div>
-                            <div class="form-group">
-                                <input type="email" id="contactEmail" name="email" placeholder=" " required>
-                                <label for="contactEmail">Your Email</label>
-                                <div class="input-highlight"></div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <textarea id="contactMessage" name="message" placeholder=" " required></textarea>
-                            <label for="contactMessage">Message</label>
-                            <div class="input-highlight"></div>
-                        </div>
-                        <button type="submit" class="btn btn-premium">
-                            <span>Send Message</span>
-                            <div class="btn-shine"></div>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    
-    <div class="modal" id="noticeModal">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="noticeModalTitle">Add New Notice</h3>
-                <button class="modal-close" id="closeNoticeModal">&times;</button>
-            </div>
-            <form id="noticeForm">
-                <div class="form-group">
-                    <input type="text" id="noticeTitle" placeholder=" " required>
-                    <label for="noticeTitle">Notice Title</label>
-                    <div class="input-highlight"></div>
-                </div>
-                <div class="form-group">
-                    <textarea id="noticeDescription" placeholder=" " required></textarea>
-                    <label for="noticeDescription">Description</label>
-                    <div class="input-highlight"></div>
-                </div>
-                <div class="form-group">
-                    <input type="url" id="noticePdf" placeholder=" ">
-                    <label for="noticePdf">PDF Link (Optional)</label>
-                    <div class="input-highlight"></div>
-                </div>
-                <div class="form-group">
-                    <input type="date" id="noticeDate" required>
-                    <label for="noticeDate">Date</label>
-                    <div class="input-highlight"></div>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-outline-premium" id="cancelNotice">Cancel</button>
-                    <button type="submit" class="btn btn-premium">Save Notice</button>
-                </div>
-            </form>
+      <form id="noticeForm">
+        <div class="form-group">
+          <input type="text" id="noticeTitle" placeholder=" " required />
+          <label for="noticeTitle">Notice Title</label>
+          <div class="input-highlight"></div>
         </div>
+        <div class="form-group">
+          <textarea id="noticeDescription" placeholder=" " required></textarea>
+          <label for="noticeDescription">Description</label>
+          <div class="input-highlight"></div>
+        </div>
+
+        <div class="form-group">
+          <input type="file" id="noticeFile" accept=".pdf,.doc,.jpg,.png" />
+          <label for="noticeFile">Upload File (Optional)</label>
+          <div class="input-highlight"></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline-premium" id="cancelNotice">Cancel</button>
+          <button type="submit" class="btn btn-premium">Save Notice</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <div class="modal" id="academicModal">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="academicModalTitle">Add Academic Resource</h3>
-                <button class="modal-close" id="closeAcademicModal">&times;</button>
-            </div>
-            <form id="academicForm">
-                <div class="form-group">
-                    <input type="text" id="academicTitle" placeholder=" " required>
-                    <label for="academicTitle">Resource Title</label>
-                    <div class="input-highlight"></div>
-                </div>
-                <div class="form-group">
-                    <textarea id="academicDescription" placeholder=" " required></textarea>
-                    <label for="academicDescription">Description</label>
-                    <div class="input-highlight"></div>
-                </div>
-                <div class="form-group">
-                    <select id="academicType" required>
-                        <option value="">Select Type</option>
-                        <option value="syllabus">Syllabus</option>
-                        <option value="notes">Study Notes</option>
-                        <option value="question">Question Papers</option>
-                        <option value="timetable">Timetable</option>
-                        <option value="other">Other</option>
-                    </select>
-                    <label for="academicType">Resource Type</label>
-                    <div class="input-highlight"></div>
-                </div>
-                <div class="form-group">
-                    <input type="url" id="academicPdf" placeholder=" " required>
-                    <label for="academicPdf">PDF Link</label>
-                    <div class="input-highlight"></div>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-outline-premium" id="cancelAcademic">Cancel</button>
-                    <button type="submit" class="btn btn-premium">Save Resource</button>
-                </div>
-            </form>
+  <!-- Course Modal -->
+  <div class="modal" id="courseModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="courseModalTitle">Add New Course</h3>
+        <button class="modal-close" id="closeCourseModal">&times;</button>
+      </div>
+      <form id="courseForm">
+        <div class="form-group">\
+          <input type="text" id="courseTitle" placeholder=" " required />
+          <label for="courseTitle">Course Title</label>
+          <div class="input-highlight"></div>
         </div>
+        <div class="form-group">
+          <textarea id="courseDescription" placeholder=" " required></textarea>
+          <label for="courseDescription">Description</label>
+          <div class="input-highlight"></div>
+        </div>
+        <div class="form-group">
+          <input type="text" id="courseTeacher" placeholder=" " />
+          <label for="courseTeacher">Teacher Name</label>
+          <div class="input-highlight"></div>
+        </div>
+        <div class="form-group">
+          <input type="url" id="courseYoutube" placeholder=" " />
+          <label for="courseYoutube">YouTube Link (Optional)</label>
+          <div class="input-highlight"></div>
+        </div>
+        <div class="form-group">
+          <input type="file" id="coursePdf" accept=".pdf" />
+          <label for="coursePdf">Upload PDF (Optional)</label>
+          <div class="input-highlight"></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline-premium" id="cancelCourse">Cancel</button>
+          <button type="submit" class="btn btn-premium">Save Course</button>
+        </div>
+      </form>
     </div>
+  </div>
+  <!-- Academic Modal -->
 
-   
-    
-    <div id="notificationContainer"></div>
+  <div class="modal" id="academicModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">\
+        <h3 id="academicModalTitle">Add Academic Resource</h3>
+        <button class="modal-close" id="closeAcademicModal">&times;</button>
+      </div>
+      <form id="academicForm">
+        <div class="form-group">
+          <input type="text" id="academicTitle" placeholder=" " required />
+          <label for="academicTitle">Resource Title</label>
+          <div class="input-highlight"></div>
+        </div>
+        <div class="form-group">
+          <textarea id="academicDescription" placeholder=" " required></textarea>
+          <label for="academicDescription">Description</label>
+          <div class="input-highlight"></div>
+        </div>
+        <div class="form-group">
+          <select id="academicType" required>
+            <option value="">Select Type</option>
+            <option value="syllabus">Syllabus</option>
+            <option value="notes">Study Notes</option>
+            <option value="question">Question Papers</option>
+            <option value="timetable">Timetable</option>
+            <option value="other">Other</option>
+          </select>
+          <label for="academicType">Resource Type</label>
+          <div class="input-highlight"></div>
+        </div>
+        <div class="form-group">
+          <input type="file" id="academicPdf" accept=".pdf" required />
+          <label for="academicPdf">Upload PDF</label>
+          <div class="input-highlight"></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline-premium" id="cancelAcademic">Cancel</button>
+          <button type="submit" class="btn btn-premium">Save Resource</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-    <script src="dashboard.js"></script>
+  <!-- Notifications -->
+  <div id="notificationContainer"></div>
+
+  <!-- Scripts -->
+  <script src="dashboard.js"></script>
 </body>
 </html>

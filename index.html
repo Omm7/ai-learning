@@ -289,7 +289,7 @@
     
 
     
-    <script src="script.js"></script>
+    
     <script src="ai-chatbot.js"></script>
 
     <script>
@@ -637,12 +637,12 @@
         
         function handleGlobalSearch() {
             const term = globalSearch.value.toLowerCase();
-            
-            if (term.length > 2) {
-                filterCourses(term);
-            } else {
-                renderNetflixStyleCourses();
-            }
+            if (term.trim().length > 0) {
+    filterCourses(term);
+} else {
+    renderNetflixStyleCourses();
+}
+
         }
 
         function filterCourses(term) {

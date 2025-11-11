@@ -1,433 +1,382 @@
+// ==============================
+// ADMIN PANEL JS (EDIT + PREVIEW + PATCHED LINKS)
+// ==============================
 
-let users = JSON.parse(localStorage.getItem('users')) || [];
-let notices = JSON.parse(localStorage.getItem('notices')) || [];
-let academicResources = JSON.parse(localStorage.getItem('academicResources')) || [];
+const API_BASE = "http://localhost:5000/api";
 
+// ==============================
+// DOM Elements
+// ==============================
+const courseForm = document.getElementById("add-course-form");
+const noticeForm = document.getElementById("add-notice-form");
+const academicForm = document.getElementById("add-academic-form");
+const courseList = document.getElementById("course-list");
+const noticeList = document.getElementById("notice-list");
+const academicList = document.getElementById("academic-list");
 
-const userWelcome = document.getElementById('userWelcome');
-const logoutBtn = document.getElementById('logoutBtn');
-const tabButtons = document.querySelectorAll('.tab-btn');
-const tabPanes = document.querySelectorAll('.tab-pane');
+// For tracking edit mode
+let editingCourseId = null;
+let editingNoticeId = null;
+let editingAcademicId = null;
 
-
-const totalUsers = document.getElementById('totalUsers');
-const totalNotices = document.getElementById('totalNotices');
-const totalResources = document.getElementById('totalResources');
-const activeSessions = document.getElementById('activeSessions');
-
-
-const usersTableBody = document.getElementById('usersTableBody');
-const noticesTableBody = document.getElementById('noticesTableBody');
-const resourcesTableBody = document.getElementById('resourcesTableBody');
-
-
-const addUserBtn = document.getElementById('addUserBtn');
-const addNoticeBtn = document.getElementById('addNoticeBtn');
-const addResourceBtn = document.getElementById('addResourceBtn');
-const refreshAnalytics = document.getElementById('refreshAnalytics');
-
-
-const notificationContainer = document.getElementById('notificationContainer');
-
-
-function init() {
-    console.log('Admin dashboard initializing...');
-    
-    if (!checkAuthentication()) {
-        console.log('Authentication failed');
-        return;
+// ==============================
+// File Preview Helper
+// ==============================
+function setupFilePreview(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (!input || !preview) return;
+  input.addEventListener("change", () => {
+    if (input.files && input.files.length > 0) {
+      preview.textContent = `📄 Selected: ${input.files[0].name}`;
+    } else {
+      preview.textContent = "";
     }
-    
-    if (!checkAdminAccess()) {
-        console.log('Admin access check failed');
-        return;
-    }
-    
-    loadEventListeners();
-    loadStats();
-    loadUsersTable();
-    loadNoticesTable();
-    loadResourcesTable();
-    
-    console.log('Admin dashboard initialized successfully');
+  });
 }
+setupFilePreview("course-pdf", "course-pdf-preview");
+setupFilePreview("notice-pdf", "notice-pdf-preview");
+setupFilePreview("academic-pdf", "academic-pdf-preview");
 
-
-function checkAuthentication() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    
-    console.log('Authentication check - currentUser:', currentUser);
-    
-    if (!currentUser) {
-        console.log('No user found, redirecting to login');
-        showNotification('Please login to access admin panel', 'error');
-        setTimeout(() => {
-            window.location.href = '../auth/login.html';
-        }, 1500);
-        return false;
-    }
-    
-    return true;
-}
-
-
-function checkAdminAccess() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    
-    console.log('Admin access check - currentUser:', currentUser);
-    
-    if (!currentUser || currentUser.role !== 'admin') {
-        console.log('User is not admin, redirecting to dashboard');
-        showNotification('Access denied. Admin privileges required.', 'error');
-        setTimeout(() => {
-            window.location.href = '../dashboard/dashboard.html';
-        }, 2000);
-        return false;
-    }
-    
-    if (userWelcome) {
-        userWelcome.textContent = currentUser.name || 'Administrator';
-    }
-    
-    console.log('Admin access granted');
-    return true;
-}
-
-
-function loadEventListeners() {
-    
-    tabButtons.forEach(button => {
-        button.addEventListener('click', switchTab);
+// ==============================
+// Helper: Submit FormData
+// ==============================
+async function submitForm(endpoint, formData, method = "POST") {
+  try {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      method,
+      body: formData,
     });
-
-    
-    addUserBtn.addEventListener('click', () => openUserModal());
-    addNoticeBtn.addEventListener('click', () => openNoticeModal());
-    addResourceBtn.addEventListener('click', () => openResourceModal());
-    refreshAnalytics.addEventListener('click', refreshStats);
-    
-    
-    logoutBtn.addEventListener('click', handleLogout);
+    const data = await res.json();
+    return { ok: res.ok, ...data };
+  } catch (err) {
+    console.error("❌ Fetch Error:", err);
+    alert("❌ Unable to connect to backend!");
+    return { ok: false, success: false };
+  }
 }
 
-
-function switchTab(e) {
-    const tabId = e.currentTarget.getAttribute('data-tab');
-    
-    tabButtons.forEach(button => button.classList.remove('active'));
-    e.currentTarget.classList.add('active');
-    
-    tabPanes.forEach(pane => pane.classList.remove('active'));
-    document.getElementById(`${tabId}Tab`).classList.add('active');
-}
-
-
-function loadStats() {
-    totalUsers.textContent = users.length;
-    totalNotices.textContent = notices.length;
-    totalResources.textContent = academicResources.length;
-    activeSessions.textContent = Math.floor(Math.random() * 50) + 10;
-}
-
-function refreshStats() {
-    loadStats();
-    showNotification('Statistics refreshed successfully!', 'success');
-}
-
-
-function loadUsersTable() {
-    
-    if (users.length === 0) {
-        users = [
-            {
-                id: 'admin-001',
-                firstName: 'Admin',
-                lastName: 'User',
-                email: 'admin@gita.edu.in',
-                role: 'admin',
-                branch: 'cse',
-                rollNumber: 'ADMIN001',
-                semester: '1',
-                createdAt: new Date().toISOString()
-            }
-        ];
-        localStorage.setItem('users', JSON.stringify(users));
-    }
-    
-    usersTableBody.innerHTML = users.map(user => `
-        <tr>
-            <td>${user.firstName} ${user.lastName}</td>
-            <td>${user.email}</td>
-            <td>${user.role === 'admin' ? 'Administrator' : 'Student'}</td>
-            <td>${getBranchName(user.branch)}</td>
-            <td><span class="status-badge status-active">Active</span></td>
-            <td>
-                <div class="table-actions">
-                    <button class="table-btn btn-view" onclick="viewUser(${user.id})">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="table-btn btn-edit" onclick="editUser(${user.id})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="table-btn btn-delete" onclick="deleteUser(${user.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function getBranchName(branchCode) {
-    const branches = {
-        'cse': 'CSE',
-        'it': 'IT',
-        'ece': 'ECE',
-        'eee': 'EEE',
-        'mech': 'Mechanical',
-        'civil': 'Civil'
-    };
-    return branches[branchCode] || 'N/A';
-}
-
-function viewUser(userId) {
-    const user = users.find(u => u.id === userId);
-    if (user) {
-        showNotification(`Viewing user: ${user.firstName} ${user.lastName}`, 'success');
-    }
-}
-
-function editUser(userId) {
-    const user = users.find(u => u.id === userId);
-    if (user) {
-        showNotification(`Editing user: ${user.firstName} ${user.lastName}`, 'success');
-    }
-}
-
-function deleteUser(userId) {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    
-    if (userId === currentUser.id) {
-        showNotification('You cannot delete your own account', 'error');
-        return;
-    }
-    
-    if (confirm('Are you sure you want to delete this user?')) {
-        users = users.filter(user => user.id !== userId);
-        localStorage.setItem('users', JSON.stringify(users));
-        loadUsersTable();
-        loadStats();
-        showNotification('User deleted successfully!', 'success');
-    }
-}
-
-function openUserModal() {
-    showNotification('Add User functionality would open here', 'success');
-}
-
-
-function loadNoticesTable() {
-    
-    if (notices.length === 0) {
-        notices = [
-            {
-                id: 1,
-                title: "Semester Examination Schedule",
-                description: "The schedule for the upcoming semester examinations has been published. All students are requested to check the dates and prepare accordingly.",
-                pdfUrl: "",
-                date: "2024-01-15",
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 2,
-                title: "Hackathon 2024 Registration",
-                description: "Annual technical hackathon is scheduled for next month. Teams of 2-4 members can participate. Registration starts from next week.",
-                pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-                date: "2024-01-20",
-                createdAt: new Date().toISOString()
-            }
-        ];
-        localStorage.setItem('notices', JSON.stringify(notices));
-    }
-    
-    noticesTableBody.innerHTML = notices.map(notice => `
-        <tr>
-            <td>${notice.title}</td>
-            <td>${formatDate(notice.date)}</td>
-            <td><span class="status-badge status-active">Active</span></td>
-            <td>${Math.floor(Math.random() * 1000)}</td>
-            <td>
-                <div class="table-actions">
-                    <button class="table-btn btn-view" onclick="viewNotice(${notice.id})">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="table-btn btn-edit" onclick="editNotice(${notice.id})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="table-btn btn-delete" onclick="deleteNotice(${notice.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function viewNotice(noticeId) {
-    const notice = notices.find(n => n.id === noticeId);
-    if (notice) {
-        showNotification(`Viewing notice: ${notice.title}`, 'success');
-    }
-}
-
-function editNotice(noticeId) {
-    const notice = notices.find(n => n.id === noticeId);
-    if (notice) {
-        showNotification(`Editing notice: ${notice.title}`, 'success');
-    }
-}
-
-function deleteNotice(noticeId) {
-    if (confirm('Are you sure you want to delete this notice?')) {
-        notices = notices.filter(notice => notice.id !== noticeId);
-        localStorage.setItem('notices', JSON.stringify(notices));
-        loadNoticesTable();
-        loadStats();
-        showNotification('Notice deleted successfully!', 'success');
-    }
-}
-
-function openNoticeModal() {
-    showNotification('Add Notice functionality would open here', 'success');
-}
-
-
-function loadResourcesTable() {
-    
-    if (academicResources.length === 0) {
-        academicResources = [
-            {
-                id: 1,
-                title: "Computer Science Syllabus",
-                description: "Complete syllabus for Computer Science Engineering program for all semesters.",
-                type: "syllabus",
-                pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 2,
-                title: "Previous Year Question Papers",
-                description: "Collection of previous year question papers for all subjects.",
-                type: "question",
-                pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-                createdAt: new Date().toISOString()
-            }
-        ];
-        localStorage.setItem('academicResources', JSON.stringify(academicResources));
-    }
-    
-    resourcesTableBody.innerHTML = academicResources.map(resource => `
-        <tr>
-            <td>${resource.title}</td>
-            <td>${getResourceTypeLabel(resource.type)}</td>
-            <td>${formatDate(resource.createdAt)}</td>
-            <td>${Math.floor(Math.random() * 500)}</td>
-            <td>
-                <div class="table-actions">
-                    <button class="table-btn btn-view" onclick="viewResource(${resource.id})">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="table-btn btn-edit" onclick="editResource(${resource.id})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="table-btn btn-delete" onclick="deleteResource(${resource.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function getResourceTypeLabel(type) {
-    const labels = {
-        'syllabus': 'Syllabus',
-        'notes': 'Study Notes',
-        'question': 'Question Papers',
-        'timetable': 'Timetable',
-        'other': 'Other'
-    };
-    return labels[type] || 'Document';
-}
-
-function viewResource(resourceId) {
-    const resource = academicResources.find(r => r.id === resourceId);
-    if (resource) {
-        window.open(resource.pdfUrl, '_blank');
-    }
-}
-
-function editResource(resourceId) {
-    const resource = academicResources.find(r => r.id === resourceId);
-    if (resource) {
-        showNotification(`Editing resource: ${resource.title}`, 'success');
-    }
-}
-
-function deleteResource(resourceId) {
-    if (confirm('Are you sure you want to delete this resource?')) {
-        academicResources = academicResources.filter(resource => resource.id !== resourceId);
-        localStorage.setItem('academicResources', JSON.stringify(academicResources));
-        loadResourcesTable();
-        loadStats();
-        showNotification('Resource deleted successfully!', 'success');
-    }
-}
-
-function openResourceModal() {
-    showNotification('Add Resource functionality would open here', 'success');
-}
-
-
-function handleLogout(e) {
+// ==============================
+// 1️⃣ ADD / UPDATE COURSE
+// ==============================
+if (courseForm) {
+  courseForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    localStorage.removeItem('currentUser');
-    window.location.href = '../auth/login.html';
+
+    const title = document.getElementById("course-title").value.trim();
+    const teacher = document.getElementById("course-teacher").value.trim();
+    const description = document.getElementById("course-description").value.trim();
+    const youtube = document.getElementById("course-youtube")?.value.trim() || "";
+    const pdfFile = document.getElementById("course-pdf")?.files[0];
+
+    if (!title || !teacher || !description) {
+      alert("⚠️ Please fill all required fields!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("teacher", teacher);
+    formData.append("description", description);
+    formData.append("youtube_link", youtube);
+    if (pdfFile) formData.append("pdf", pdfFile);
+
+    const endpoint = editingCourseId ? `/admin/update-course/${editingCourseId}` : "/admin/add-course";
+    const method = editingCourseId ? "PUT" : "POST";
+
+    const data = await submitForm(endpoint, formData, method);
+
+    if (data.success) {
+      alert(editingCourseId ? "✅ Course updated!" : "✅ Course added!");
+      courseForm.reset();
+      document.getElementById("course-pdf-preview").textContent = "";
+      editingCourseId = null;
+      fetchCourses();
+    } else {
+      alert("❌ " + (data.message || "Failed to save course"));
+    }
+  });
 }
 
+// ==============================
+// 2️⃣ ADD / UPDATE NOTICE
+// ==============================
+if (noticeForm) {
+  noticeForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
+    const title = document.getElementById("notice-title").value.trim();
+    const content = document.getElementById("notice-content").value.trim();
+    const createdBy = document.getElementById("notice-author")?.value.trim() || "Admin";
+    const pdfFile = document.getElementById("notice-pdf")?.files[0];
+
+    if (!title || !content) {
+      alert("⚠️ Please fill all required fields!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("created_by", createdBy);
+    if (pdfFile) formData.append("pdf", pdfFile);
+
+    const endpoint = editingNoticeId ? `/admin/update-notice/${editingNoticeId}` : "/admin/add-notice";
+    const method = editingNoticeId ? "PUT" : "POST";
+
+    const data = await submitForm(endpoint, formData, method);
+
+    if (data.success) {
+      alert(editingNoticeId ? "✅ Notice updated!" : "✅ Notice added!");
+      noticeForm.reset();
+      document.getElementById("notice-pdf-preview").textContent = "";
+      editingNoticeId = null;
+      fetchNotices();
+    } else {
+      alert("❌ " + (data.message || "Failed to save notice"));
+    }
+  });
 }
 
-function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <span>${message}</span>
-        <button onclick="this.parentElement.remove()">&times;</button>
-    `;
-    
-    notificationContainer.appendChild(notification);
-    
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
-    }, 5000);
+// ==============================
+// 3️⃣ ADD / UPDATE ACADEMIC INFO
+// ==============================
+if (academicForm) {
+  academicForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const title = document.getElementById("info-title").value.trim();
+    const description = document.getElementById("info-content").value.trim();
+    const pdfFile = document.getElementById("academic-pdf")?.files[0];
+
+    if (!title || !description) {
+      alert("⚠️ Please fill all required fields!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    if (pdfFile) formData.append("pdf", pdfFile);
+
+    const endpoint = editingAcademicId ? `/admin/update-academic/${editingAcademicId}` : "/admin/add-academic";
+    const method = editingAcademicId ? "PUT" : "POST";
+
+    const data = await submitForm(endpoint, formData, method);
+
+    if (data.success) {
+      alert(editingAcademicId ? "✅ Info updated!" : "✅ Info added!");
+      academicForm.reset();
+      document.getElementById("academic-pdf-preview").textContent = "";
+      editingAcademicId = null;
+      fetchAcademicInfo();
+    } else {
+      alert("❌ " + (data.message || "Failed to save academic info"));
+    }
+  });
 }
 
+// ==============================
+// Utility for safe inline strings (escape single quotes and backticks)
+// ==============================
+function escForInlineStr(s) {
+  if (s === null || s === undefined) return "";
+  return String(s).replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/`/g, "\\`").replace(/\n/g, "\\n");
+}
 
-document.addEventListener('DOMContentLoaded', init);
+// ==============================
+// 4️⃣ FETCH COURSES
+// ==============================
+async function fetchCourses() {
+  if (!courseList) return;
+  courseList.innerHTML = `<tr><td colspan="7">⏳ Loading courses...</td></tr>`;
 
+  try {
+    const res = await fetch(`${API_BASE}/courses`);
+    const data = await res.json();
+    console.log("Courses Data:", data);
 
-window.viewUser = viewUser;
-window.editUser = editUser;
-window.deleteUser = deleteUser;
-window.viewNotice = viewNotice;
-window.editNotice = editNotice;
-window.deleteNotice = deleteNotice;
-window.viewResource = viewResource;
-window.editResource = editResource;
-window.deleteResource = deleteResource;
+    if (!data.success || !data.courses?.length) {
+      courseList.innerHTML = `<tr><td colspan="7">No courses found.</td></tr>`;
+      return;
+    }
+
+    courseList.innerHTML = data.courses
+      .map((c, i) => {
+        const pdfLink = c.pdf_path || c.pdf_url || c.pdf || c.file_path || "";
+        const fixedPdfLink = pdfLink
+          ? (pdfLink.startsWith("http") ? pdfLink : `${API_BASE.replace("/api", "")}${pdfLink.startsWith("/") ? pdfLink : "/" + pdfLink}`)
+          : "";
+        const youtube = c.youtube_link || c.youtube || "";
+
+        // safely pass strings into onclick
+        const stitle = escForInlineStr(c.title);
+        const steacher = escForInlineStr(c.teacher || "");
+        const sdesc = escForInlineStr(c.description || "");
+        const syoutube = escForInlineStr(youtube);
+
+        return `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${c.title || ""}</td>
+          <td>${c.teacher || "N/A"}</td>
+          <td>${c.description || "—"}</td>
+          <td>${fixedPdfLink ? `<a href="${fixedPdfLink}" target="_blank">View PDF</a>` : "—"}</td>
+          <td>${youtube ? `<a href="${youtube}" target="_blank">Watch</a>` : "—"}</td>
+          <td>
+            <button onclick="editCourse(${c.id}, '${stitle}', '${steacher}', '${sdesc}', '${syoutube}')" class="edit-btn">✏️ Edit</button>
+            <button onclick="deleteCourse(${c.id})" class="delete-btn">🗑️ Delete</button>
+          </td>
+        </tr>`;
+      })
+      .join("");
+  } catch (err) {
+    console.error(err);
+    courseList.innerHTML = `<tr><td colspan="7">❌ Failed to load courses.</td></tr>`;
+  }
+}
+
+// ==============================
+// 5️⃣ FETCH NOTICES
+// ==============================
+async function fetchNotices() {
+  if (!noticeList) return;
+  noticeList.innerHTML = `<tr><td colspan="5">⏳ Loading notices...</td></tr>`;
+
+  try {
+    const res = await fetch(`${API_BASE}/notices`);
+    const data = await res.json();
+
+    if (!data.success || !data.notices?.length) {
+      noticeList.innerHTML = `<tr><td colspan="5">No notices found.</td></tr>`;
+      return;
+    }
+
+    noticeList.innerHTML = data.notices
+      .map((n, i) => {
+        const contentSafe = escForInlineStr(n.content || "");
+        return `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${n.title}</td>
+          <td>${n.created_by || "Admin"}</td>
+          <td>${n.file_path ? `<a href="${(n.file_path.startsWith("http") ? n.file_path : API_BASE.replace("/api","") + n.file_path)}" target="_blank">PDF</a>` : "—"}</td>
+          <td>
+            <button onclick="editNotice(${n.id}, '${escForInlineStr(n.title)}', \`${contentSafe}\`)" class="edit-btn">✏️ Edit</button>
+            <button onclick="deleteNotice(${n.id})" class="delete-btn">🗑️ Delete</button>
+          </td>
+        </tr>`;
+      })
+      .join("");
+  } catch (err) {
+    console.error(err);
+    noticeList.innerHTML = `<tr><td colspan="5">❌ Failed to load notices.</td></tr>`;
+  }
+}
+
+// ==============================
+// 6️⃣ FETCH ACADEMIC INFO
+// ==============================
+async function fetchAcademicInfo() {
+  if (!academicList) return;
+  academicList.innerHTML = `<tr><td colspan="4">⏳ Loading academic info...</td></tr>`;
+
+  try {
+    const res = await fetch(`${API_BASE}/academic`);
+    const data = await res.json();
+
+    if (!data.success || !data.academic?.length) {
+      academicList.innerHTML = `<tr><td colspan="4">No data found.</td></tr>`;
+      return;
+    }
+
+    academicList.innerHTML = data.academic
+      .map((a, i) => {
+        const safeDesc = escForInlineStr(a.description || "");
+        return `
+       <tr>
+  <td>${i + 1}</td>
+  <td>${a.title}</td>
+  <td>${a.description || "—"}</td>
+  <td>${a.file_path ? `<a href="${(a.file_path.startsWith("http") ? a.file_path : API_BASE.replace("/api","") + a.file_path)}" target="_blank">PDF</a>` : "—"}</td>
+  <td>
+    <button onclick="editAcademic(${a.id}, '${escForInlineStr(a.title)}', \`${safeDesc}\`)" class="edit-btn">✏️ Edit</button>
+    <button onclick="deleteAcademic(${a.id})" class="delete-btn">🗑️ Delete</button>
+  </td>
+</tr>`;
+      })
+      .join("");
+  } catch (err) {
+    console.error(err);
+    academicList.innerHTML = `<tr><td colspan="4">❌ Failed to load academic info.</td></tr>`;
+  }
+}
+
+// ==============================
+// 7️⃣ EDIT FUNCTIONS (prefill form)
+// ==============================
+function editCourse(id, title, teacher, description, youtube) {
+  editingCourseId = id;
+  document.getElementById("course-title").value = title || "";
+  document.getElementById("course-teacher").value = teacher || "";
+  document.getElementById("course-description").value = description || "";
+  document.getElementById("course-youtube").value = youtube || "";
+  // show the form container if hidden
+  const container = document.getElementById("courseFormContainer");
+  if (container) container.style.display = "block";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function editNotice(id, title, content) {
+  editingNoticeId = id;
+  document.getElementById("notice-title").value = title || "";
+  document.getElementById("notice-content").value = content || "";
+  const container = document.getElementById("noticeFormContainer");
+  if (container) container.style.display = "block";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function editAcademic(id, title, description) {
+  editingAcademicId = id;
+  document.getElementById("info-title").value = title || "";
+  document.getElementById("info-content").value = description || "";
+  const container = document.getElementById("academicFormContainer");
+  if (container) container.style.display = "block";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ==============================
+// 8️⃣ DELETE FUNCTIONS
+// ==============================
+async function deleteCourse(id) {
+  if (!confirm("🗑️ Delete this course?")) return;
+  const res = await fetch(`${API_BASE}/admin/delete-course/${id}`, { method: "DELETE" });
+  const data = await res.json();
+  if (data.success) fetchCourses();
+  else alert("❌ Failed to delete course");
+}
+
+async function deleteNotice(id) {
+  if (!confirm("🗑️ Delete this notice?")) return;
+  const res = await fetch(`${API_BASE}/admin/delete-notice/${id}`, { method: "DELETE" });
+  const data = await res.json();
+  if (data.success) fetchNotices();
+  else alert("❌ Failed to delete notice");
+}
+
+async function deleteAcademic(id) {
+  if (!confirm("🗑️ Delete this academic info?")) return;
+  const res = await fetch(`${API_BASE}/admin/delete-academic/${id}`, { method: "DELETE" });
+  const data = await res.json();
+  if (data.success) fetchAcademicInfo();
+  else alert("❌ Failed to delete record");
+}
+
+// ==============================
+// 9️⃣ AUTO LOAD ON PAGE READY
+// ==============================
+document.addEventListener("DOMContentLoaded", () => {
+  fetchCourses();
+  fetchNotices();
+  fetchAcademicInfo();
+});

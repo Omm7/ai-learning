@@ -38,6 +38,7 @@
             </div>
 
             <form id="signupForm">
+                <!-- First + Last Name -->
                 <div class="form-row">
                     <div class="form-group">
                         <input type="text" id="firstName" placeholder=" " required>
@@ -51,32 +52,36 @@
                     </div>
                 </div>
                 
+                <!-- Email -->
                 <div class="form-group">
                     <input type="email" id="email" placeholder=" " required>
                     <label for="email">Email Address</label>
                     <div class="input-highlight"></div>
                 </div>
                 
+                <!-- Phone (Optional) -->
                 <div class="form-group">
                     <input type="text" id="phone" placeholder=" ">
                     <label for="phone">Phone Number (Optional)</label>
                     <div class="input-highlight"></div>
                 </div>
-                
+
+                <!-- Branch -->
                 <div class="form-group">
-                    <select id="branch" required>
-                        <option value="">Select Branch</option>
-                        <option value="cse">Computer Science & Engineering</option>
+                    <select id="branch" name="branch" required>
+                        <option value="" disabled selected hidden>Select Branch</option>
+                        <option value="cse">Computer Science &amp; Engineering</option>
                         <option value="it">Information Technology</option>
-                        <option value="ece">Electronics & Communication</option>
-                        <option value="eee">Electrical & Electronics</option>
+                        <option value="ece">Electronics &amp; Communication</option>
+                        <option value="eee">Electrical &amp; Electronics</option>
                         <option value="mech">Mechanical Engineering</option>
                         <option value="civil">Civil Engineering</option>
                     </select>
-                    <label for="branch">Branch</label>
+                    <label for="branch">Select Branch</label>
                     <div class="input-highlight"></div>
                 </div>
-                
+
+                <!-- Roll Number + Semester -->
                 <div class="form-row">
                     <div class="form-group">
                         <input type="text" id="rollNumber" placeholder=" " required>
@@ -84,8 +89,8 @@
                         <div class="input-highlight"></div>
                     </div>
                     <div class="form-group">
-                        <select id="semester" required>
-                            <option value="">Select Semester</option>
+                        <select id="semester" name="semester" required>
+                            <option value="" disabled selected hidden></option>
                             <option value="1">1st Semester</option>
                             <option value="2">2nd Semester</option>
                             <option value="3">3rd Semester</option>
@@ -100,26 +105,30 @@
                     </div>
                 </div>
                 
+                <!-- Password -->
                 <div class="form-group">
                     <input type="password" id="password" placeholder=" " required>
                     <label for="password">Password</label>
                     <div class="input-highlight"></div>
                 </div>
                 
+                <!-- Confirm Password -->
                 <div class="form-group">
                     <input type="password" id="confirmPassword" placeholder=" " required>
                     <label for="confirmPassword">Confirm Password</label>
                     <div class="input-highlight"></div>
                 </div>
                 
+                <!-- Terms -->
                 <div class="form-options">
                     <label class="checkbox premium-checkbox">
-                        <input type="checkbox" id="agreeTerms" required>
-                        <span class="checkmark"></span>
+                        <input type="checkbox" class="checkmark" id="agreeTerms" required>
+                        <!-- <span class="checkmark" id="agreeTerms"></span> -->
                         I agree to the <a href="#" class="link">Terms of Service</a> and <a href="#" class="link">Privacy Policy</a>
                     </label>
                 </div>
                 
+                <!-- Submit -->
                 <button type="submit" class="btn btn-premium btn-full">
                     <span>Create Account</span>
                     <div class="btn-shine"></div>

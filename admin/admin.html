@@ -1,258 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - LearnHub AI</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - LearnHub AI</title>
+
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 </head>
+
 <body>
-    
-    <header class="app-header">
-        <div class="header-content">
-            <a href="../index.html" class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <span>LearnHub AI</span>
-            </a>
-            
-            <nav class="nav-menu">
-    <ul>
-        <li><a href="../index.html" class="nav-link">
-            <i class="fas fa-play-circle"></i>
-            <span>Courses</span>
-        </a></li>
-        <li><a href="../dashboard/dashboard.html" class="nav-link">
-            <i class="fas fa-bullhorn"></i>
-            <span>Notice Board</span>
-        </a></li>
-        <li><a href="../dashboard/dashboard.html" class="nav-link">
-            <i class="fas fa-book-open"></i>
-            <span>Academic Info</span>
-        </a></li>
-        <li><a href="#" class="nav-link active" data-section="adminDashboard">
-            <i class="fas fa-cog"></i>
-            <span>Admin Panel</span>
-        </a></li>
-    </ul>
-</nav>
+  <header class="app-header">
+    <div class="header-content">
+      <a href="../index.html" class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        <span>LearnHub AI</span>
+      </a>
 
-            <div class="user-actions">
-                <div class="user-menu">
-                    <button class="user-menu-btn" id="userMenuBtn">
-                        <div class="user-avatar admin-avatar">
-                            <i class="fas fa-user-shield"></i>
-                        </div>
-                        <span id="userWelcome">Administrator</span>
-                        <i class="fas fa-caret-down"></i>
-                    </button>
-                    <div class="dropdown-menu" id="userDropdown">
-                        <a href="../profile/profile.html"><i class="fas fa-user-circle"></i> Profile</a>
-                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
-                    </div>
-                </div>
-            </div>
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="#" class="nav-link active" data-section="adminDashboard"><i class="fas fa-cog"></i> <span>Admin Panel</span></a></li>
+        </ul>
+      </nav>
 
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <i class="fas fa-bars"></i>
-            </button>
+      <div class="user-actions">
+        <div class="user-menu">
+          <button class="user-menu-btn" id="userMenuBtn">
+            <div class="user-avatar admin-avatar"><i class="fas fa-user-shield"></i></div>
+            <span id="userWelcome">Administrator</span>
+            <i class="fas fa-caret-down"></i>
+          </button>
+          <div class="dropdown-menu" id="userDropdown">
+            <!-- <a href="../profile/profile.html"><i class="fas fa-user-circle"></i> Profile</a> -->
+            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+          </div>
         </div>
-    </header>
+      </div>
+    </div>
+  </header>
 
-    
-    <main class="main-content">
-        
-        <section class="hero-section admin-hero">
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
-                <h1>Admin Dashboard</h1>
-                <p>Manage notices, academic resources, and monitor platform activity</p>
-            </div>
-        </section>
+  <main class="main-content">
+    <section class="hero-section admin-hero">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1>Admin Dashboard</h1>
+        <p>Manage notices, courses, and academic resources</p>
+      </div>
+    </section>
 
-        
-        <section class="content-section active" id="adminDashboardSection">
-            <div class="admin-stats">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="totalUsers">0</h3>
-                        <p>Total Users</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-bullhorn"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="totalNotices">0</h3>
-                        <p>Active Notices</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-file-pdf"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="totalResources">0</h3>
-                        <p>Academic Resources</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="activeSessions">0</h3>
-                        <p>Active Sessions</p>
-                    </div>
-                </div>
+    <section class="content-section active" id="adminDashboardSection">
+      <div class="admin-tabs">
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="notices">Notices</button>
+          <button class="tab-btn" data-tab="resources">Courses</button>
+          <button class="tab-btn" data-tab="academic">Academic Info</button>
+        </div>
+
+        <div class="tab-content">
+
+          <!-- ✅ NOTICES -->
+          <div class="tab-pane active" id="noticesTab">
+            <div class="tab-header">
+              <h3>Notices Management</h3>
+              <button class="btn btn-premium" id="addNoticeBtn"><i class="fas fa-plus"></i> Add Notice</button>
             </div>
 
-            <div class="admin-tabs">
-                <div class="tab-buttons">
-                    <button class="tab-btn active" data-tab="users">Users Management</button>
-                    <button class="tab-btn" data-tab="notices">Notices Management</button>
-                    <button class="tab-btn" data-tab="resources">Resources Management</button>
-                    <button class="tab-btn" data-tab="analytics">Platform Analytics</button>
+            <div class="form-container" id="noticeFormContainer" style="display:none;">
+              <form id="add-notice-form" enctype="multipart/form-data">
+                <input type="text" id="notice-title" placeholder="Notice Title" required />
+                <textarea id="notice-content" placeholder="Notice Content" rows="4" required></textarea>
+                <input type="text" id="notice-author" placeholder="Created by (optional)" />
+                <input type="file" id="notice-pdf" accept=".pdf" />
+                <small id="notice-pdf-preview" class="file-preview"></small>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Submit Notice</button>
+                  <button type="button" class="btn btn-cancel" id="cancelNoticeForm">Cancel</button>
                 </div>
-
-                <div class="tab-content">
-                    
-                    <div class="tab-pane active" id="usersTab">
-                        <div class="tab-header">
-                            <h3>Users Management</h3>
-                            <button class="btn btn-premium" id="addUserBtn">
-                                <i class="fas fa-plus"></i> Add User
-                            </button>
-                        </div>
-                        <div class="table-container">
-                            <table class="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Branch</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="usersTableBody">
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    
-                    <div class="tab-pane" id="noticesTab">
-                        <div class="tab-header">
-                            <h3>Notices Management</h3>
-                            <button class="btn btn-premium" id="addNoticeBtn">
-                                <i class="fas fa-plus"></i> Add Notice
-                            </button>
-                        </div>
-                        <div class="table-container">
-                            <table class="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Views</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="noticesTableBody">
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    
-                    <div class="tab-pane" id="resourcesTab">
-                        <div class="tab-header">
-                            <h3>Resources Management</h3>
-                            <button class="btn btn-premium" id="addResourceBtn">
-                                <i class="fas fa-plus"></i> Add Resource
-                            </button>
-                        </div>
-                        <div class="table-container">
-                            <table class="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Type</th>
-                                        <th>Upload Date</th>
-                                        <th>Downloads</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="resourcesTableBody">
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    
-                    <div class="tab-pane" id="analyticsTab">
-                        <div class="tab-header">
-                            <h3>Platform Analytics</h3>
-                            <button class="btn btn-premium" id="refreshAnalytics">
-                                <i class="fas fa-sync-alt"></i> Refresh
-                            </button>
-                        </div>
-                        <div class="analytics-grid">
-                            <div class="analytics-card">
-                                <h4>User Activity</h4>
-                                <div class="chart-placeholder">
-                                    <i class="fas fa-chart-bar"></i>
-                                    <p>Activity chart will be displayed here</p>
-                                </div>
-                            </div>
-                            <div class="analytics-card">
-                                <h4>Popular Resources</h4>
-                                <div class="chart-placeholder">
-                                    <i class="fas fa-chart-pie"></i>
-                                    <p>Resource statistics will be displayed here</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              </form>
             </div>
-        </section>
-    </main>
 
-    
-    <div id="notificationContainer"></div>
+            <div class="table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Created By</th>
+                    <th>PDF</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="notice-list"></tbody>
+              </table>
+            </div>
+          </div>
 
-    <script src="admin.js"></script>
+          <!-- ✅ COURSES -->
+          <div class="tab-pane" id="resourcesTab">
+            <div class="tab-header">
+              <h3>Courses Management</h3>
+              <button class="btn btn-premium" id="addCourseBtn"><i class="fas fa-plus"></i> Add Course</button>
+            </div>
 
-    
-<script>
-    
-    console.log('=== ADMIN PAGE DEBUG INFO ===');
-    console.log('Current URL:', window.location.href);
-    console.log('LocalStorage currentUser:', localStorage.getItem('currentUser'));
-    
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    console.log('Parsed currentUser:', currentUser);
-    
-    if (currentUser) {
-        console.log('User role:', currentUser.role);
-        console.log('Is admin?', currentUser.role === 'admin');
+            <div class="form-container" id="courseFormContainer" style="display:none;">
+              <form id="add-course-form" enctype="multipart/form-data">
+                <input type="text" id="course-title" placeholder="Course Title" required />
+                <input type="text" id="course-teacher" placeholder="Instructor Name" required />
+                <textarea id="course-description" placeholder="Description" rows="3" required></textarea>
+                <input type="file" id="course-pdf" accept=".pdf" />
+                <small id="course-pdf-preview" class="file-preview"></small>
+                <input type="text" id="course-youtube" placeholder="YouTube Video Link (optional)" />
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Add Course</button>
+                  <button type="button" class="btn btn-cancel" id="cancelCourseForm">Cancel</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Instructor</th>
+                    <th>Description</th>
+                    <th>PDF</th>
+                    <th>Video</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="course-list"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ✅ ACADEMIC INFO -->
+          <div class="tab-pane" id="academicTab">
+            <div class="tab-header">
+              <h3>Academic Info Management</h3>
+              <button class="btn btn-premium" id="addAcademicBtn"><i class="fas fa-plus"></i> Add Info</button>
+            </div>
+
+            <div class="form-container" id="academicFormContainer" style="display:none;">
+              <form id="add-academic-form" enctype="multipart/form-data">
+                <input type="text" id="info-title" placeholder="Information Title" required />
+                <textarea id="info-content" placeholder="Details / Description" rows="4" required></textarea>
+                <input type="file" id="academic-pdf" accept=".pdf" />
+                <small id="academic-pdf-preview" class="file-preview"></small>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">Add Info</button>
+                  <button type="button" class="btn btn-cancel" id="cancelAcademicForm">Cancel</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>PDF</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="academic-list"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+
+  <script>
+    // === User Dropdown ===
+    const userMenuBtn = document.getElementById("userMenuBtn");
+    const userDropdown = document.getElementById("userDropdown");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    userMenuBtn.addEventListener("click", () => userDropdown.classList.toggle("active"));
+    document.addEventListener("click", (e) => {
+      if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target))
+        userDropdown.classList.remove("active");
+    });
+
+    logoutBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.removeItem("currentUser");
+      window.location.href = "../auth/login.html";
+    });
+
+    // === Tabs ===
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    const tabPanes = document.querySelectorAll(".tab-pane");
+    tabBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        tabBtns.forEach((b) => b.classList.remove("active"));
+        tabPanes.forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab + "Tab").classList.add("active");
+      });
+    });
+
+    // === Toggle Add Forms ===
+    const toggleForm = (btn, formContainer, cancelBtn) => {
+      btn.onclick = () => (formContainer.style.display = "block");
+      cancelBtn.onclick = () => (formContainer.style.display = "none");
+    };
+    toggleForm(addNoticeBtn, noticeFormContainer, cancelNoticeForm);
+    toggleForm(addCourseBtn, courseFormContainer, cancelCourseForm);
+    toggleForm(addAcademicBtn, academicFormContainer, cancelAcademicForm);
+
+    // === Auth Validation ===
+    const userData = JSON.parse(localStorage.getItem("currentUser"));
+    if (!userData) {
+      alert("Please log in first.");
+      window.location.href = "../auth/login.html";
+    } else if (userData.role !== "admin") {
+      alert("Access Denied: Admins only!");
+      window.location.href = "../dashboard/dashboard.html";
     } else {
-        console.log('No user logged in');
+      document.getElementById("userWelcome").textContent = userData.username || "Administrator";
     }
-    console.log('=== END DEBUG INFO ===');
-</script>
+  </script>
 </body>
 </html>

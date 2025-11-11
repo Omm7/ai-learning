@@ -1,133 +1,119 @@
-
 const signupForm = document.getElementById('signupForm');
-
+const API_BASE = "http://127.0.0.1:5000"; // Flask backend URL
 
 function init() {
-    checkIfAlreadyLoggedIn();
-    loadEventListeners();
+   loadEventListeners();
 }
-
-
-function checkIfAlreadyLoggedIn() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
-        window.location.href = '../index.html';
-    }
-}
-
 
 function loadEventListeners() {
-    signupForm.addEventListener('submit', handleSignup);
-    
-    document.getElementById('confirmPassword').addEventListener('input', validatePasswordMatch);
+ signupForm.addEventListener('submit', handleSignup);
+ document.getElementById('confirmPassword').addEventListener('input', validatePasswordMatch);
 }
 
-
+// Password match check
 function validatePasswordMatch() {
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-    
-    if (confirmPassword && password !== confirmPassword) {
-        confirmPasswordInput.style.borderColor = 'var(--premium-red)';
-    } else {
-        confirmPasswordInput.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-    }
+ const password = document.getElementById('password').value;
+ const confirmPassword = document.getElementById('confirmPassword').value;
+ const confirmPasswordInput = document.getElementById('confirmPassword');
+
+ if (confirmPassword && password !== confirmPassword) {
+ confirmPasswordInput.style.borderColor = 'var(--premium-red)';
+ } else {
+ confirmPasswordInput.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+ }
 }
 
-
+// Handle signup form
 function handleSignup(e) {
-    e.preventDefault();
-    
-    const firstName = document.getElementById('firstName').value;
-    const lastName = document.getElementById('lastName').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const branch = document.getElementById('branch').value;
-    const rollNumber = document.getElementById('rollNumber').value;
-    const semester = document.getElementById('semester').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const agreeTerms = document.getElementById('agreeTerms').checked;
-    
-    if (!firstName || !lastName || !email || !branch || !rollNumber || !semester || !password || !confirmPassword) {
-        showNotification('Please fill in all required fields', 'error');
-        return;
-    }
-    
-    if (password !== confirmPassword) {
-        showNotification('Passwords do not match', 'error');
-        return;
-    }
-    
-    if (password.length < 6) {
-        showNotification('Password must be at least 6 characters', 'error');
-        return;
-    }
-    
-    if (!agreeTerms) {
-        showNotification('Please agree to the terms and conditions', 'error');
-        return;
-    }
-    
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const existingUser = users.find(user => user.email === email);
-    
-    if (existingUser) {
-        showNotification('Email already registered. Please use a different email.', 'error');
-        return;
-    }
-    
-    const newUser = {
-        id: Date.now(),
-        firstName,
-        lastName,
-        email,
-        phone: phone || '',
-        branch,
-        rollNumber,
-        semester,
-        password,
-        createdAt: new Date().toISOString(),
-        role: 'student'
-    };
-    
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    
-    const currentUser = {
-        email: newUser.email,
-        name: `${newUser.firstName} ${newUser.lastName}`,
-        role: 'student'
-    };
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    
-    showNotification('Account created successfully! Redirecting...', 'success');
-    
-    setTimeout(() => {
-        window.location.href = '../index.html';
-    }, 2000);
+ e.preventDefault();
+
+const firstName = document.getElementById('firstName').value.trim();
+const lastName = document.getElementById('lastName').value.trim();
+const email = document.getElementById('email').value.trim();
+const phone = document.getElementById('phone').value.trim();
+const branch = document.getElementById('branch').value;
+const rollNumber = document.getElementById('rollNumber').value.trim();
+const semester = document.getElementById('semester').value;
+const password = document.getElementById('password').value;
+const confirmPassword = document.getElementById('confirmPassword').value;
+const agreeTerms = document.getElementById('agreeTerms').checked;
+
+// Required field validation
+if (!firstName || !lastName || !email || !branch || !rollNumber || !semester || !password || !confirmPassword) {
+showNotification('Please fill in all required fields', 'error');
+return;
+ }
+
+ if (password !== confirmPassword) {
+ showNotification('Passwords do not match', 'error');
+ return;
+ }
+
+ if (password.length < 6) {
+ showNotification('Password must be at least 6 characters', 'error');
+ return;
+ }
+
+ if (!agreeTerms) {
+ showNotification('Please agree to the terms and conditions', 'error');
+ return;
+ }
+
+ const newUser = {
+ // 🌟 FIXED: Mismatching camelCase keys changed to snake_case
+ 'first_name': firstName, 
+ 'last_name': lastName, 
+ email, // Matches backend
+ phone: phone || '', // Matches backend
+ branch, // Matches backend
+ 'roll_number': rollNumber, // 🌟 FIXED
+ semester, // Matches backend
+ password
+ // confirmPassword is not sent to the server (which is correct)
+ };
+
+ // API Call
+ fetch(`${API_BASE}/api/register`, { // Endpoint should be /api/register
+ method: "POST",
+ headers: { "Content-Type": "application/json" },
+ body: JSON.stringify(newUser)
+ })
+ .then(res => res.json())
+ .then(data => {
+ if (data.success) {
+ showNotification('Account created successfully! Redirecting to login...', 'success');
+ setTimeout(() => {
+ // FIXED: Correct path confirmed by file structure
+ window.location.href = '../auth/login.html'; 
+ }, 2000);
+ } else {
+ showNotification(data.message || 'Signup failed. Try again.', 'error');
+ }
+ })
+.catch(err => {
+ console.error("Error:", err);
+ showNotification("Server error. Please try again later.", "error");
+});
 }
 
-
+// Show notification on top
 function showNotification(message, type) {
-    const notificationContainer = document.getElementById('notificationContainer');
-    
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <span>${message}</span>
-        <button onclick="this.parentElement.remove()">&times;</button>
-    `;
-    
-    notificationContainer.appendChild(notification);
-    
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
-    }, 5000);
-}
+ const notificationContainer = document.getElementById('notificationContainer');
 
+ const notification = document.createElement('div');
+ notification.className = `notification notification-${type}`;
+ notification.innerHTML = `
+ <span>${message}</span>
+ <button onclick="this.parentElement.remove()">&times;</button>
+ `;
+
+ notificationContainer.appendChild(notification);
+
+ setTimeout(() => {
+ if (notification.parentElement) {
+ notification.remove();
+ }
+ }, 5000);
+}
 
 document.addEventListener('DOMContentLoaded', init);

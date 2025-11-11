@@ -10,11 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Background -->
     <div class="login-background">
         <div class="bg-gradient"></div>
         <div class="bg-pattern"></div>
     </div>
     
+    <!-- Header -->
     <div class="login-header">
         <a href="../index.html" class="logo">
             <i class="fas fa-graduation-cap"></i>
@@ -25,6 +27,7 @@
         </a>
     </div>
     
+    <!-- Login Container -->
     <div class="login-container">
         <div class="login-card">
             <div class="card-glow"></div>
@@ -37,6 +40,7 @@
                 <p>Choose your role to continue to LearnHub</p>
             </div>
 
+            <!-- Role Selection Tabs -->
             <div class="role-selection">
                 <div class="role-tabs">
                     <button class="role-tab active" data-role="user">
@@ -49,12 +53,12 @@
                     </button>
                 </div>
 
-                
+                <!-- STUDENT LOGIN -->
                 <div class="login-form active" id="userLoginForm">
                     <form id="userForm">
                         <div class="form-group">
                             <input type="email" id="userEmail" placeholder=" " required>
-                            <label for="userEmail">Email or phone number</label>
+                            <label for="userEmail">Email</label>
                             <div class="input-highlight"></div>
                         </div>
                         <div class="form-group">
@@ -68,11 +72,11 @@
                         </button>
                         <div class="form-options">
                             <label class="checkbox premium-checkbox">
-                                <input type="checkbox" id="rememberMe">
-                                <span class="checkmark"></span>
+                                <input type="checkbox" class="checkmark" id="rememberMe">
+                                <!-- <span class="checkmark"></span> -->
                                 Remember me
                             </label>
-                            <a href="#" class="help-link" id="forgotPassword">Need help?</a>
+                            <a href="#" class="help-link" id="forgotPassword">Forgot password?</a>
                         </div>
                     </form>
                     <div class="form-footer">
@@ -80,7 +84,7 @@
                     </div>
                 </div>
 
-                
+                <!-- STUDENT FORGOT PASSWORD -->
                 <div class="login-form" id="forgotPasswordForm">
                     <form id="resetPasswordForm">
                         <div class="form-group">
@@ -88,9 +92,13 @@
                             <label for="resetEmail">Email</label>
                             <div class="input-highlight"></div>
                         </div>
-                        <p class="reset-info">Enter your email address and we'll send you a link to reset your password.</p>
+                        <div class="form-group">
+                            <input type="password" id="resetPassword" placeholder=" " required>
+                            <label for="resetPassword">New Password</label>
+                            <div class="input-highlight"></div>
+                        </div>
                         <button type="submit" class="btn btn-premium btn-full">
-                            <span>Send Reset Link</span>
+                            <span>Update Password</span>
                             <div class="btn-shine"></div>
                         </button>
                     </form>
@@ -99,7 +107,7 @@
                     </div>
                 </div>
 
-                
+                <!-- ADMIN LOGIN -->
                 <div class="login-form" id="adminLoginForm">
                     <form id="adminForm">
                         <div class="form-group">
@@ -117,14 +125,41 @@
                             <div class="btn-shine"></div>
                         </button>
                     </form>
+                    <div class="form-footer">
+                        <p><a href="#" id="adminForgotPassword">Forgot Admin Password?</a></p>
+                    </div>
                     <div class="admin-note">
                         <p><i class="fas fa-shield-alt"></i> Admin access is restricted to authorized personnel only.</p>
+                    </div>
+                </div>
+
+                <!-- ADMIN FORGOT PASSWORD -->
+                <div class="login-form" id="adminForgotPasswordForm">
+                    <form id="adminResetForm">
+                        <div class="form-group">
+                            <input type="text" id="resetAdminID" placeholder=" " required>
+                            <label for="resetAdminID">Admin ID</label>
+                            <div class="input-highlight"></div>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="resetAdminPassword" placeholder=" " required>
+                            <label for="resetAdminPassword">New Password</label>
+                            <div class="input-highlight"></div>
+                        </div>
+                        <button type="submit" class="btn btn-premium btn-full">
+                            <span>Update Admin Password</span>
+                            <div class="btn-shine"></div>
+                        </button>
+                    </form>
+                    <div class="form-footer">
+                        <p>Remember your password? <a href="#" id="backToAdminLogin">Back to Admin Login</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Notification container -->
     <div id="notificationContainer"></div>
 
     <script src="login.js"></script>

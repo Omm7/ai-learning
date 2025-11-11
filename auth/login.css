@@ -1,16 +1,33 @@
-
 .login-section {
     min-height: 100vh;
     position: relative;
 }
 
 .login-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/images/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -2;
+}
+
+.bg-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    background: linear-gradient(
+        to bottom right,
+        rgba(0, 0, 0, 0.7),
+        rgba(0, 0, 0, 0.3)
+    );
+    z-index: -1;
 }
 
 .bg-gradient {
@@ -391,4 +408,47 @@
         padding: 30px 20px;
         min-width: auto;
     }
+}
+/* ======================
+   ADMIN FORGOT PASSWORD
+   ====================== */
+#adminForgotPasswordForm {
+    margin-top: 20px;
+}
+
+#adminForgotPasswordForm .form-group {
+    margin-bottom: 20px;
+}
+
+#adminForgotPasswordForm .form-footer {
+    margin-top: 15px;
+    font-size: 14px;
+    text-align: center;
+    color: var(--premium-light-gray);
+}
+
+#adminForgotPasswordForm .form-footer a {
+    color: var(--premium-white);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+#adminForgotPasswordForm .form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Admin reset info box */
+.admin-reset-info {
+    font-size: 14px;
+    color: var(--premium-light-gray);
+    margin-bottom: 20px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    padding: 10px;
+}
+
+/* Buttons consistent with student */
+#adminForgotPasswordForm button {
+    margin-top: 10px;
 }
